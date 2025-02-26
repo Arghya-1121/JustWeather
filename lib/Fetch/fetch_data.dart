@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:http/http.dart' as http;
-import 'package:weather03/api.dart';
+import 'package:weather03/apis.dart';
 
 class Weather {
   final String city;
