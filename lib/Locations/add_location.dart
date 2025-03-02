@@ -1,18 +1,32 @@
 import 'package:flutter/material.dart';
+import 'package:weather03/Helper/location_manager.dart';
 
 class AddLocation extends StatefulWidget {
   const AddLocation({super.key, required this.appName});
-
   final String appName;
-
   @override
   State<AddLocation> createState() => _AddLocationState();
 }
 
 class _AddLocationState extends State<AddLocation> {
+  List<String> locations = [];
+  final TextEditingController wantToAdd = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    _loadLocations();
+  }
+
+  void _loadLocations() async {
+    final savedLocations = await LocationManager.getLocation();
+    setState(() {
+      locations = savedLocations;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    TextEditingController wantToAdd = TextEditingController();
     return Scaffold(
       appBar: AppBar(
         title: Text('Add Location'),
@@ -27,7 +41,6 @@ class _AddLocationState extends State<AddLocation> {
       body: Padding(
         padding: EdgeInsets.all(8),
         child: Column(
-          spacing: 8,
           children: [
             SizedBox(
               width: double.infinity,
@@ -53,6 +66,25 @@ class _AddLocationState extends State<AddLocation> {
                   focusColor: Colors.cyan,
                   contentPadding: EdgeInsets.all(8),
                 ),
+              ),
+            ),
+            Expanded(
+              child: ListView.separated(
+                separatorBuilder: (context, index) => Divider(thickness: 2),
+                itemCount: locations.length,
+                itemBuilder: (context, index) {
+                  final location = locations[index];
+                  return ListTile(
+                    title: Text(location),
+                    trailing: IconButton(
+                      onPressed: () {
+                        LocationManager.removeLocation(location);
+                        _loadLocations();
+                      },
+                      icon: Icon(Icons.delete_outline),
+                    ),
+                  );
+                },
               ),
             ),
           ],

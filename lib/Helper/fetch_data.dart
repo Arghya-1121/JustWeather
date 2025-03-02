@@ -63,7 +63,6 @@ class Weather {
   );
 
   static Future<Weather> fetchWeather(String city) async {
-    const String api = '';
     final url = Uri.parse(
       'https://api.openweathermap.org/data/2.5/weather?q=$city&appid=${WeatherApi.API}&units=metric',
     );
