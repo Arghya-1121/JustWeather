@@ -62,9 +62,22 @@ class Weather {
     wind_direction: json['wind']['deg']?.toDouble() ?? 0.0,
   );
 
-  static Future<Weather> fetchWeather(String city) async {
+  static Future<Weather> fetchWeatherArea(String city) async {
     final url = Uri.parse(
       'https://api.openweathermap.org/data/2.5/weather?q=$city&appid=${WeatherApi.API}&units=metric',
+    );
+    final response = await http.get(url);
+    if (response.statusCode == 200) {
+      final data = json.decode(response.body);
+      return Weather.fromJson(data);
+    } else {
+      throw Exception('Failed to load weather data');
+    }
+  }
+
+  static Future<Weather> fetchWeatherLocation(double lon, double lat) async {
+    final url = Uri.parse(
+      'https://api.openweathermap.org/data/2.5/weather?lat=$lat&lon=$lon&appid=${WeatherApi.API}&units=metric',
     );
     final response = await http.get(url);
     if (response.statusCode == 200) {

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:weather03/Helper/fetch_data.dart';
+import 'package:weather03/Helper/fetch_location.dart';
 import 'package:weather03/Helper/location_manager.dart';
 import 'package:weather03/Locations/add_location.dart';
 
@@ -22,7 +23,11 @@ class _HomePageState extends State<HomePage> {
     super.initState();
     locations.add('Kolkata');
     _loadLocations();
-    _fetchWeather();
+    _initializeData();
+  }
+
+  void _initializeData() async {
+    await _fetchWeather();
   }
 
   void _loadLocations() async {
@@ -32,15 +37,30 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
-  void _fetchWeather() async {
+  Future<void> _fetchWeather() async {
+    // for location manager!
+    // try {
+    //   response = await Weather.fetchWeatherArea(locations[0]);
+    //   setState(() {
+    //     _isLoading = false;
+    //   });
+    // } catch (e) {
+    //   setState(() {
+    //     _errorMessage = 'Failed to load the Weather Data. $e';
+    //     _isLoading = false;
+    //   });
+    // }
+    // For current location
     try {
-      response = await Weather.fetchWeather(locations[0]);
+      var position = await getCurrentLocation();
+      response =
+      await Weather.fetchWeatherLocation(position.longitude, position.latitude);
       setState(() {
         _isLoading = false;
       });
     } catch (e) {
       setState(() {
-        _errorMessage = 'Failed to load the Weather Data. $e';
+        _errorMessage = 'Failed to load the Weather data. $e';
         _isLoading = false;
       });
     }
@@ -50,7 +70,7 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.appName),
+        title: Text(widget.appName, style: TextStyle(fontFamily: 'Pacifico')),
         centerTitle: true,
         actions: [
           IconButton(
@@ -69,7 +89,7 @@ class _HomePageState extends State<HomePage> {
         padding: EdgeInsets.all(3),
         child: _isLoading
             ? Center(
-            child: CircularProgressIndicator()) // Show loading indicator
+            child: CircularProgressIndicator())
             : _errorMessage != null
             ? Center(child: Text(_errorMessage!)) // Show error message
             : Column(
@@ -104,9 +124,11 @@ class _HomePageState extends State<HomePage> {
                 spacing: 3,
                 children: [
                   Expanded(child: Text('Max Temp: ${response!.temp_max}',
-                      textAlign: TextAlign.start)),
+                      textAlign: TextAlign.start,
+                      style: TextStyle(fontSize: 18))),
                   Expanded(child: Text('Min Temp: ${response!.temp_min}',
-                      textAlign: TextAlign.end)),
+                      textAlign: TextAlign.end,
+                      style: TextStyle(fontSize: 18))),
                 ],
               ),
             ),
@@ -116,9 +138,11 @@ class _HomePageState extends State<HomePage> {
                 spacing: 3,
                 children: [
                   Expanded(child: Text('Visibility: ${response!.visibility}',
-                      textAlign: TextAlign.start)),
+                      textAlign: TextAlign.start,
+                      style: TextStyle(fontSize: 18))),
                   Expanded(child: Text('Outside: ${response!.description}',
-                      textAlign: TextAlign.end)),
+                      textAlign: TextAlign.end,
+                      style: TextStyle(fontSize: 18))),
                 ],
               ),
             ),
@@ -128,9 +152,11 @@ class _HomePageState extends State<HomePage> {
                 spacing: 3,
                 children: [
                   Expanded(child: Text('Humidity: ${response!.humidity}',
-                      textAlign: TextAlign.start)),
+                      textAlign: TextAlign.start,
+                      style: TextStyle(fontSize: 18))),
                   Expanded(child: Text('Pressure: ${response!.pressure} mmHg',
-                      textAlign: TextAlign.end)),
+                      textAlign: TextAlign.end,
+                      style: TextStyle(fontSize: 18))),
                 ],
               ),
             ),
@@ -140,10 +166,12 @@ class _HomePageState extends State<HomePage> {
                 spacing: 3,
                 children: [
                   Expanded(child: Text('Wind Speed: ${response!.wind_speed}',
-                      textAlign: TextAlign.start)),
+                      textAlign: TextAlign.start,
+                      style: TextStyle(fontSize: 18))),
                   Expanded(child: Text(
                       'Wind Direction: ${response!.wind_direction}',
-                      textAlign: TextAlign.end)),
+                      textAlign: TextAlign.end,
+                      style: TextStyle(fontSize: 18))),
                 ],
               ),
             ),
@@ -158,12 +186,14 @@ class _HomePageState extends State<HomePage> {
                             response!.sunrise))}\n'
                         'Sunset: ${DateFormat('hh:mm:ss a').format(
                         DateTime.fromMillisecondsSinceEpoch(
-                            response!.sunset))}', textAlign: TextAlign.start,),
+                            response!.sunset))}', textAlign: TextAlign.start,
+                        style: TextStyle(fontSize: 18)),
                   ),
                   Expanded(
                     child: Text('Sea level: ${response!
                         .sea_level} m\nGround level: ${response!.grd_level} m',
-                      textAlign: TextAlign.end,),
+                        textAlign: TextAlign.end,
+                        style: TextStyle(fontSize: 18)),
                   ),
                 ],
               ),
