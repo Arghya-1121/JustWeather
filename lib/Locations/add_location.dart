@@ -11,7 +11,7 @@ class AddLocation extends StatefulWidget {
 class _AddLocationState extends State<AddLocation> {
   List<String> locations = [];
   final TextEditingController wantToAdd = TextEditingController();
-
+  bool _currentLocationEnable = true;
   @override
   void initState() {
     super.initState();
@@ -42,6 +42,41 @@ class _AddLocationState extends State<AddLocation> {
         padding: EdgeInsets.all(8),
         child: Column(
           children: [
+            Container(
+              width: double.infinity,
+              height: 60,
+              decoration: BoxDecoration(),
+              child: ListTile(
+                autofocus: false,
+                title: Text('Current Location', style: TextStyle(
+                    fontSize: 20, fontWeight: FontWeight.w700)),
+                trailing: Switch(
+                  autofocus: true,
+                  value: _currentLocationEnable,
+                  activeColor: Colors.blue,
+                  inactiveTrackColor: Colors.blueGrey,
+                  trackOutlineColor: WidgetStateProperty.resolveWith((states) {
+                    if (states.contains(WidgetState.selected)) {
+                      return Colors.blue.shade500;
+                    } else {
+                      return Colors.black;
+                    }
+                  }),
+                  thumbColor: WidgetStateProperty.resolveWith((states) {
+                    if (states.contains(WidgetState.selected)) {
+                      return Colors.blue;
+                    } else {
+                      return Colors.black;
+                    }
+                  }),
+                  onChanged: (bool value) {
+                    setState(() {
+                      _currentLocationEnable = value;
+                    });
+                  },
+                ),
+              ),
+            ),
             SizedBox(
               width: double.infinity,
               height: 50,
