@@ -38,32 +38,37 @@ class _HomePageState extends State<HomePage> {
   }
 
   Future<void> _fetchWeather() async {
-    // for location manager!
-    // try {
-    //   response = await Weather.fetchWeatherArea(locations[0]);
-    //   setState(() {
-    //     _isLoading = false;
-    //   });
-    // } catch (e) {
-    //   setState(() {
-    //     _errorMessage = 'Failed to load the Weather Data. $e';
-    //     _isLoading = false;
-    //   });
-    // }
-    // For current location
-    try {
-      var position = await getCurrentLocation();
-      response =
-      await Weather.fetchWeatherLocation(position.longitude, position.latitude);
-      setState(() {
-        _isLoading = false;
-      });
-    } catch (e) {
-      setState(() {
-        _errorMessage = 'Failed to load the Weather data. $e';
-        _isLoading = false;
-      });
+    if (currentLocationEnable == true) {
+      // For current location
+      try {
+        var position = await getCurrentLocation();
+        response =
+        await Weather.fetchWeatherLocation(
+            position.longitude, position.latitude);
+        setState(() {
+          _isLoading = false;
+        });
+      } catch (e) {
+        setState(() {
+          _errorMessage = 'Failed to load the Weather data. $e';
+          _isLoading = false;
+        });
+      }
+    } else {
+      // for location manager!
+      try {
+        response = await Weather.fetchWeatherArea(locations[0]);
+        setState(() {
+          _isLoading = false;
+        });
+      } catch (e) {
+        setState(() {
+          _errorMessage = 'Failed to load the Weather Data. $e';
+          _isLoading = false;
+        });
+      }
     }
+    setState(() {});
   }
 
   @override
@@ -85,122 +90,158 @@ class _HomePageState extends State<HomePage> {
           ),
         ],
       ),
-      body: Padding(
-        padding: EdgeInsets.all(3),
-        child: _isLoading
-            ? Center(
-            child: CircularProgressIndicator())
-            : _errorMessage != null
-            ? Center(child: Text(_errorMessage!)) // Show error message
-            : Column(
-          spacing: 3,
-          children: [
-            Expanded(
-              flex: 5,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text('${response!.city} (${convertTime(response!.timezone)})',
-                      style: TextStyle(
-                          fontSize: 25, fontWeight: FontWeight.w700)),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      body: GestureDetector(
+        onVerticalDragUpdate: (drag) {
+          if (drag.primaryDelta! > 15) {
+            _fetchWeather();
+          }
+        },
+        child: RefreshIndicator(
+          onRefresh: _fetchWeather,
+          child: Padding(
+            padding: EdgeInsets.all(3),
+            child: _isLoading
+                ? Center(
+                child: CircularProgressIndicator())
+                : _errorMessage != null
+                ? Center(child: Text(_errorMessage!)) // Show error message
+                : ListView(
+              // spacing: 3,
+              children: [
+                SizedBox(
+                  height: 350,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Text('${response!.temperature}', style: TextStyle(
-                          fontSize: 100, fontWeight: FontWeight.bold)),
-                      Image.network(
-                          'https://openweathermap.org/img/wn/${response!
-                              .icon}@2x.png'),
+                      Text('${response!.city} (${convertTime(response!
+                          .timezone)})',
+                          style: TextStyle(
+                              fontSize: 25, fontWeight: FontWeight.w700)),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          Text('${response!.temperature}', style: TextStyle(
+                              fontSize: 100, fontWeight: FontWeight.bold)),
+                          Image.network(
+                              'https://openweathermap.org/img/wn/${response!
+                                  .icon}@2x.png'),
+                        ],
+                      ),
+                      Text('Feels like ${response!.feels_like}',
+                          style: TextStyle(
+                              fontSize: 20, fontWeight: FontWeight.w700)),
                     ],
                   ),
-                  Text('Feels like ${response!.feels_like}', style: TextStyle(
-                      fontSize: 20, fontWeight: FontWeight.w700)),
-                ],
-              ),
-            ),
-            Expanded(
-              flex: 1,
-              child: Row(
-                spacing: 3,
-                children: [
-                  Expanded(child: Text('Max Temp: ${response!.temp_max}',
-                      textAlign: TextAlign.start,
-                      style: TextStyle(fontSize: 18))),
-                  Expanded(child: Text('Min Temp: ${response!.temp_min}',
-                      textAlign: TextAlign.end,
-                      style: TextStyle(fontSize: 18))),
-                ],
-              ),
-            ),
-            Expanded(
-              flex: 1,
-              child: Row(
-                spacing: 3,
-                children: [
-                  Expanded(child: Text('Visibility: ${response!.visibility}',
-                      textAlign: TextAlign.start,
-                      style: TextStyle(fontSize: 18))),
-                  Expanded(child: Text('Outside: ${response!.description}',
-                      textAlign: TextAlign.end,
-                      style: TextStyle(fontSize: 18))),
-                ],
-              ),
-            ),
-            Expanded(
-              flex: 1,
-              child: Row(
-                spacing: 3,
-                children: [
-                  Expanded(child: Text('Humidity: ${response!.humidity}',
-                      textAlign: TextAlign.start,
-                      style: TextStyle(fontSize: 18))),
-                  Expanded(child: Text('Pressure: ${response!.pressure} mmHg',
-                      textAlign: TextAlign.end,
-                      style: TextStyle(fontSize: 18))),
-                ],
-              ),
-            ),
-            Expanded(
-              flex: 1,
-              child: Row(
-                spacing: 3,
-                children: [
-                  Expanded(child: Text('Wind Speed: ${response!.wind_speed}',
-                      textAlign: TextAlign.start,
-                      style: TextStyle(fontSize: 18))),
-                  Expanded(child: Text(
-                      'Wind Direction: ${response!.wind_direction}',
-                      textAlign: TextAlign.end,
-                      style: TextStyle(fontSize: 18))),
-                ],
-              ),
-            ),
-            Expanded(
-              flex: 1,
-              child: Row(
-                spacing: 3,
-                children: [
-                  Expanded(
-                    child: Text('Sunrise: ${DateFormat('hh:mm:ss a').format(
-                        DateTime.fromMillisecondsSinceEpoch(
-                            response!.sunrise))}\n'
-                        'Sunset: ${DateFormat('hh:mm:ss a').format(
-                        DateTime.fromMillisecondsSinceEpoch(
-                            response!.sunset))}', textAlign: TextAlign.start,
-                        style: TextStyle(fontSize: 18)),
+                ),
+                SizedBox(
+                  height: 60,
+                  child: Row(
+                    spacing: 3,
+                    children: [
+                      Expanded(child: Text('Max Temp: ${response!.temp_max}',
+                          textAlign: TextAlign.start,
+                          style: TextStyle(fontSize: 18))),
+                      Expanded(child: Text('Min Temp: ${response!.temp_min}',
+                          textAlign: TextAlign.end,
+                          style: TextStyle(fontSize: 18))),
+                    ],
                   ),
-                  Expanded(
-                    child: Text('Sea level: ${response!
-                        .sea_level} m\nGround level: ${response!.grd_level} m',
-                        textAlign: TextAlign.end,
-                        style: TextStyle(fontSize: 18)),
+                ),
+                SizedBox(
+                  height: 60,
+                  child: Row(
+                    spacing: 3,
+                    children: [
+                      Expanded(child: Text('Visibility: ${response!
+                          .visibility}',
+                          textAlign: TextAlign.start,
+                          style: TextStyle(fontSize: 18))),
+                      Expanded(child: Text('Outside: ${response!.description}',
+                          textAlign: TextAlign.end,
+                          style: TextStyle(fontSize: 18))),
+                    ],
                   ),
-                ],
-              ),
+                ),
+                SizedBox(
+                  height: 60,
+                  child: Row(
+                    spacing: 3,
+                    children: [
+                      Expanded(child: Text('Humidity: ${response!.humidity}',
+                          textAlign: TextAlign.start,
+                          style: TextStyle(fontSize: 18))),
+                      Expanded(child: Text('Pressure: ${response!
+                          .pressure} mmHg',
+                          textAlign: TextAlign.end,
+                          style: TextStyle(fontSize: 18))),
+                    ],
+                  ),
+                ),
+                SizedBox(
+                  height: 60,
+                  child: Row(
+                    spacing: 3,
+                    children: [
+                      Expanded(child: Text('Wind Speed: ${response!
+                          .wind_speed}',
+                          textAlign: TextAlign.start,
+                          style: TextStyle(fontSize: 18))),
+                      Expanded(child: Text(
+                          'Wind Direction: ${response!.wind_direction}',
+                          textAlign: TextAlign.end,
+                          style: TextStyle(fontSize: 18))),
+                    ],
+                  ),
+                ),
+                SizedBox(
+                  height: 60,
+                  child: Row(
+                    spacing: 3,
+                    children: [
+                      Expanded(
+                        child: Text('Sunrise: ${DateFormat('hh:mm:ss a').format(
+                            DateTime.fromMillisecondsSinceEpoch(
+                                response!.sunrise))}',
+                            textAlign: TextAlign.start,
+                            style: TextStyle(fontSize: 18)),
+                      ),
+                      Expanded(
+                        child: Text('Sea level: ${response!.sea_level} m',
+                            textAlign: TextAlign.end,
+                            style: TextStyle(fontSize: 18)),
+                      ),
+                    ],
+                  ),
+                ),
+                SizedBox(
+                  height: 60,
+                  child: Row(
+                    spacing: 3,
+                    children: [
+                      Expanded(
+                        child: Text('Sunset: ${DateFormat('hh:mm:ss a').format(
+                            DateTime.fromMillisecondsSinceEpoch(
+                                response!.sunset))}',
+                          textAlign: TextAlign.start,
+                          style: TextStyle(fontSize: 18),
+                        ),
+                      ),
+                      Expanded(
+                        child: Text(
+                          'Ground level: ${response!.grd_level} m',
+                          textAlign: TextAlign.end,
+                          style: TextStyle(fontSize: 18),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
             ),
-          ],
+          ),
         ),
       ),
+      // floatingActionButton: IconButton(onPressed: _fetchWeather, icon: Icon(Icons.refresh)),
     );
   }
 }

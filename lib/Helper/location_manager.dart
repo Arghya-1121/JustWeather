@@ -1,5 +1,8 @@
 // ignore: depend_on_referenced_packages
 import 'package:shared_preferences/shared_preferences.dart';
+
+bool currentLocationEnable = true;
+
 class LocationManager {
   static const String _key = 'Location';
 
@@ -24,7 +27,11 @@ class LocationManager {
 
   static Future<void> removeLocation(String loc) async {
     final locs = await getLocation();
-    locs.remove(loc);
-    await saveLocations(locs);
+    if (locs.contains(loc)) {
+      locs.remove(loc);
+      await saveLocations(locs);
+    } else {
+      throw Exception('Location not found: $loc');
+    }
   }
 }

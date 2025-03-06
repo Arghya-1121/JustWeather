@@ -4,6 +4,7 @@ import 'package:weather03/Helper/location_manager.dart';
 class AddLocation extends StatefulWidget {
   const AddLocation({super.key, required this.appName});
   final String appName;
+
   @override
   State<AddLocation> createState() => _AddLocationState();
 }
@@ -12,6 +13,7 @@ class _AddLocationState extends State<AddLocation> {
   List<String> locations = [];
   final TextEditingController wantToAdd = TextEditingController();
   bool _currentLocationEnable = true;
+
   @override
   void initState() {
     super.initState();
@@ -47,14 +49,14 @@ class _AddLocationState extends State<AddLocation> {
               height: 60,
               decoration: BoxDecoration(),
               child: ListTile(
-                autofocus: false,
-                title: Text('Current Location', style: TextStyle(
-                    fontSize: 20, fontWeight: FontWeight.w700)),
+                title: Text(
+                  'Current Location',
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700),
+                ),
                 trailing: Switch(
-                  autofocus: true,
                   value: _currentLocationEnable,
-                  activeColor: Colors.blue,
-                  inactiveTrackColor: Colors.blueGrey,
+                  activeColor: Colors.blue.shade700,
+                  inactiveTrackColor: Colors.grey,
                   trackOutlineColor: WidgetStateProperty.resolveWith((states) {
                     if (states.contains(WidgetState.selected)) {
                       return Colors.blue.shade500;
@@ -81,12 +83,9 @@ class _AddLocationState extends State<AddLocation> {
               width: double.infinity,
               height: 50,
               child: TextField(
-                autocorrect: true,
-                autofocus: true,
                 controller: wantToAdd,
                 keyboardType: TextInputType.text,
                 style: TextStyle(fontSize: 18, color: Colors.black),
-                textAlign: TextAlign.start,
                 decoration: InputDecoration(
                   hintText: 'Enter Location',
                   border: OutlineInputBorder(
@@ -97,8 +96,16 @@ class _AddLocationState extends State<AddLocation> {
                     borderRadius: BorderRadius.circular(15),
                     borderSide: BorderSide(color: Colors.blue, width: 2),
                   ),
-                  suffixIcon: Icon(Icons.add_location_outlined),
-                  focusColor: Colors.cyan,
+                  suffix: IconButton(
+                    icon: Icon(Icons.add_location_alt_outlined),
+                    onPressed: () async {
+                      if (wantToAdd.text.isNotEmpty) {
+                        await LocationManager.addLocation(wantToAdd.text);
+                        _loadLocations();
+                        wantToAdd.clear();
+                      }
+                    },
+                  ),
                   contentPadding: EdgeInsets.all(8),
                 ),
               ),
@@ -112,9 +119,12 @@ class _AddLocationState extends State<AddLocation> {
                   return ListTile(
                     title: Text(location),
                     trailing: IconButton(
-                      onPressed: () {
-                        LocationManager.removeLocation(location);
-                        _loadLocations();
+                      onPressed: () async {
+                        await LocationManager.removeLocation(location);
+                        setState(() {
+                          locations.remove(
+                              location); // Update the UI immediately
+                        });
                       },
                       icon: Icon(Icons.delete_outline),
                     ),
@@ -124,6 +134,10 @@ class _AddLocationState extends State<AddLocation> {
             ),
           ],
         ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {},
+        child: Icon(Icons.refresh_rounded),
       ),
     );
   }
