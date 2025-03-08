@@ -135,10 +135,6 @@ class _AddLocationState extends State<AddLocation> {
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {},
-        child: Icon(Icons.refresh_rounded),
-      ),
     );
   }
 }
