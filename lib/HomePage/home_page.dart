@@ -20,7 +20,6 @@ class _HomePageState extends State<HomePage> {
   bool _isLoading = true;
   List<Weather?> weatherData = [];
 
-
   @override
   void initState() {
     super.initState();
@@ -120,191 +119,184 @@ class _HomePageState extends State<HomePage> {
             child: Padding(
               padding: EdgeInsets.all(3),
               child: _isLoading
-                  ? Center(child: CircularProgressIndicator())
-                  : _errorMessage != null
-                  ? Center(
-                child: Text(_errorMessage!),
-              )
-                  : ListView(
-                // spacing: 3,
-                children: [
-                  SizedBox(
-                    height: 350,
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          '${response!.city} (${_convertTime(
-                              response.timezone)})',
-                          style: TextStyle(
-                            fontSize: 25,
-                            fontWeight: FontWeight.w700,
-                          ),
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                            Text(
-                              '${response.temperature}',
-                              style: TextStyle(
-                                fontSize: 100,
-                                fontWeight: FontWeight.bold,
-                              ),
+                      ? Center(child: CircularProgressIndicator())
+                      : _errorMessage != null
+                      ? Center(child: Text(_errorMessage!))
+                      : ListView(
+                        // spacing: 3,
+                        children: [
+                          SizedBox(
+                            height: 350,
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                  '${response!.city} (${_convertTime(response.timezone)})',
+                                  style: TextStyle(
+                                    fontSize: 25,
+                                    fontWeight: FontWeight.w700,
+                                  ),
+                                ),
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceEvenly,
+                                  children: [
+                                    Text(
+                                      '${response.temperature}',
+                                      style: TextStyle(
+                                        fontSize: 100,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                    Image.network(
+                                      'https://openweathermap.org/img/wn/${response.icon}@2x.png',
+                                    ),
+                                  ],
+                                ),
+                                Text(
+                                  'Feels like ${response.feels_like}',
+                                  style: TextStyle(
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.w700,
+                                  ),
+                                ),
+                              ],
                             ),
-                            Image.network(
-                              'https://openweathermap.org/img/wn/${response
-                                  .icon}@2x.png',
+                          ),
+                          SizedBox(
+                            height: 60,
+                            child: Row(
+                              spacing: 3,
+                              children: [
+                                Expanded(
+                                  child: Text(
+                                    'Max Temp: ${response.temp_max}',
+                                    textAlign: TextAlign.start,
+                                    style: TextStyle(fontSize: 18),
+                                  ),
+                                ),
+                                Expanded(
+                                  child: Text(
+                                    'Min Temp: ${response.temp_min}',
+                                    textAlign: TextAlign.end,
+                                    style: TextStyle(fontSize: 18),
+                                  ),
+                                ),
+                              ],
                             ),
-                          ],
-                        ),
-                        Text(
-                          'Feels like ${response.feels_like}',
-                          style: TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.w700,
                           ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  SizedBox(
-                    height: 60,
-                    child: Row(
-                      spacing: 3,
-                      children: [
-                        Expanded(
-                          child: Text(
-                            'Max Temp: ${response.temp_max}',
-                            textAlign: TextAlign.start,
-                            style: TextStyle(fontSize: 18),
+                          SizedBox(
+                            height: 60,
+                            child: Row(
+                              spacing: 3,
+                              children: [
+                                Expanded(
+                                  child: Text(
+                                    'Visibility: ${response.visibility}',
+                                    textAlign: TextAlign.start,
+                                    style: TextStyle(fontSize: 18),
+                                  ),
+                                ),
+                                Expanded(
+                                  child: Text(
+                                    'Outside: ${response.description}',
+                                    textAlign: TextAlign.end,
+                                    style: TextStyle(fontSize: 18),
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
-                        ),
-                        Expanded(
-                          child: Text(
-                            'Min Temp: ${response.temp_min}',
-                            textAlign: TextAlign.end,
-                            style: TextStyle(fontSize: 18),
+                          SizedBox(
+                            height: 60,
+                            child: Row(
+                              spacing: 3,
+                              children: [
+                                Expanded(
+                                  child: Text(
+                                    'Humidity: ${response.humidity}',
+                                    textAlign: TextAlign.start,
+                                    style: TextStyle(fontSize: 18),
+                                  ),
+                                ),
+                                Expanded(
+                                  child: Text(
+                                    'Pressure: ${response.pressure} mmHg',
+                                    textAlign: TextAlign.end,
+                                    style: TextStyle(fontSize: 18),
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  SizedBox(
-                    height: 60,
-                    child: Row(
-                      spacing: 3,
-                      children: [
-                        Expanded(
-                          child: Text(
-                            'Visibility: ${response.visibility}',
-                            textAlign: TextAlign.start,
-                            style: TextStyle(fontSize: 18),
+                          SizedBox(
+                            height: 60,
+                            child: Row(
+                              spacing: 3,
+                              children: [
+                                Expanded(
+                                  child: Text(
+                                    'Wind Speed: ${response.wind_speed}',
+                                    textAlign: TextAlign.start,
+                                    style: TextStyle(fontSize: 18),
+                                  ),
+                                ),
+                                Expanded(
+                                  child: Text(
+                                    'Wind Direction: ${response.wind_direction}',
+                                    textAlign: TextAlign.end,
+                                    style: TextStyle(fontSize: 18),
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
-                        ),
-                        Expanded(
-                          child: Text(
-                            'Outside: ${response.description}',
-                            textAlign: TextAlign.end,
-                            style: TextStyle(fontSize: 18),
+                          SizedBox(
+                            height: 60,
+                            child: Row(
+                              spacing: 3,
+                              children: [
+                                Expanded(
+                                  child: Text(
+                                    'Sunrise: ${DateFormat('hh:mm:ss a').format(DateTime.fromMillisecondsSinceEpoch(response.sunrise))}',
+                                    textAlign: TextAlign.start,
+                                    style: TextStyle(fontSize: 18),
+                                  ),
+                                ),
+                                Expanded(
+                                  child: Text(
+                                    'Sea level: ${response.sea_level} m',
+                                    textAlign: TextAlign.end,
+                                    style: TextStyle(fontSize: 18),
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  SizedBox(
-                    height: 60,
-                    child: Row(
-                      spacing: 3,
-                      children: [
-                        Expanded(
-                          child: Text(
-                            'Humidity: ${response.humidity}',
-                            textAlign: TextAlign.start,
-                            style: TextStyle(fontSize: 18),
+                          SizedBox(
+                            height: 60,
+                            child: Row(
+                              spacing: 3,
+                              children: [
+                                Expanded(
+                                  child: Text(
+                                    'Sunset: ${DateFormat('hh:mm:ss a').format(DateTime.fromMillisecondsSinceEpoch(response.sunset))}',
+                                    textAlign: TextAlign.start,
+                                    style: TextStyle(fontSize: 18),
+                                  ),
+                                ),
+                                Expanded(
+                                  child: Text(
+                                    'Ground level: ${response.grd_level} m',
+                                    textAlign: TextAlign.end,
+                                    style: TextStyle(fontSize: 18),
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
-                        ),
-                        Expanded(
-                          child: Text(
-                            'Pressure: ${response.pressure} mmHg',
-                            textAlign: TextAlign.end,
-                            style: TextStyle(fontSize: 18),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  SizedBox(
-                    height: 60,
-                    child: Row(
-                      spacing: 3,
-                      children: [
-                        Expanded(
-                          child: Text(
-                            'Wind Speed: ${response.wind_speed}',
-                            textAlign: TextAlign.start,
-                            style: TextStyle(fontSize: 18),
-                          ),
-                        ),
-                        Expanded(
-                          child: Text(
-                            'Wind Direction: ${response.wind_direction}',
-                            textAlign: TextAlign.end,
-                            style: TextStyle(fontSize: 18),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  SizedBox(
-                    height: 60,
-                    child: Row(
-                      spacing: 3,
-                      children: [
-                        Expanded(
-                          child: Text(
-                            'Sunrise: ${DateFormat('hh:mm:ss a').format(
-                                DateTime.fromMillisecondsSinceEpoch(
-                                    response.sunrise))}',
-                            textAlign: TextAlign.start,
-                            style: TextStyle(fontSize: 18),
-                          ),
-                        ),
-                        Expanded(
-                          child: Text(
-                            'Sea level: ${response.sea_level} m',
-                            textAlign: TextAlign.end,
-                            style: TextStyle(fontSize: 18),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  SizedBox(
-                    height: 60,
-                    child: Row(
-                      spacing: 3,
-                      children: [
-                        Expanded(
-                          child: Text(
-                            'Sunset: ${DateFormat('hh:mm:ss a').format(
-                                DateTime.fromMillisecondsSinceEpoch(
-                                    response.sunset))}',
-                            textAlign: TextAlign.start,
-                            style: TextStyle(fontSize: 18),
-                          ),
-                        ),
-                        Expanded(
-                          child: Text(
-                            'Ground level: ${response.grd_level} m',
-                            textAlign: TextAlign.end,
-                            style: TextStyle(fontSize: 18),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
+                        ],
+                      ),
             ),
           );
         },
@@ -320,5 +312,3 @@ class _HomePageState extends State<HomePage> {
     return '${(time ~/ 3600)}:${((time % 3600) ~/ 60)}';
   }
 }
-
-
