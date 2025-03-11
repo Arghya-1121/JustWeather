@@ -96,13 +96,11 @@ class _HomePageState extends State<HomePage> {
             onPressed: _fetchAllWeather, icon: Icon(Icons.refresh)),
         actions: [
           IconButton(
-            onPressed:
-                () async {
+            onPressed: () async {
               await Navigator.push(
                   context,
-                  MaterialPageRoute(
-                    builder: (context) => AddLocation(appName: widget.appName),
-                  ),
+                MaterialPageRoute(
+                    builder: (context) => AddLocation(appName: widget.appName)),
               );
               _loadLocations();
             },
@@ -114,11 +112,9 @@ class _HomePageState extends State<HomePage> {
         itemCount: currentLocationEnable ? locations.length + 1 : locations
             .length,
         itemBuilder: (context, index) {
-          // Weather? response = (index < weatherData.length) ? weatherData[index] : null;
           Weather? response;
           if (currentLocationEnable && index == 0) {
-            response =
-                currentWeatherData; // Show current location on first page
+            response = currentWeatherData;
           } else {
             int locationIndex = currentLocationEnable ? index - 1 : index;
             response = (locationIndex < weatherData.length)
@@ -170,9 +166,8 @@ class _HomePageState extends State<HomePage> {
                               ),
                             ),
                             Image.network(
-                              'https://openweathermap.org/img/wn/${response
-                                  .icon}@2x.png',
-                            ),
+                                'https://openweathermap.org/img/wn/${response
+                                    .icon}@2x.png'),
                           ],
                         ),
                         Text(
