@@ -34,6 +34,8 @@ class _AddLocationState extends State<AddLocation> {
       appBar: AppBar(
         title: Text('Add Location'),
         centerTitle: true,
+        elevation: 1,
+        shadowColor: Colors.blueGrey,
         actions: [
           IconButton(
             onPressed: () {},

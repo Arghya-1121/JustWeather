@@ -92,6 +92,8 @@ class _HomePageState extends State<HomePage> {
       appBar: AppBar(
         title: Text(widget.appName, style: TextStyle(fontFamily: 'Pacifico')),
         centerTitle: true,
+        elevation: 1,
+        shadowColor: Colors.blueGrey,
         leading: IconButton(
             onPressed: _fetchAllWeather, icon: Icon(Icons.refresh)),
         actions: [
