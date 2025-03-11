@@ -19,6 +19,7 @@ class _HomePageState extends State<HomePage> {
   String? _errorMessage;
   bool _isLoading = true;
   List<Weather?> weatherData = [];
+  Weather? currentWeatherData;
 
   @override
   void initState() {
@@ -27,6 +28,10 @@ class _HomePageState extends State<HomePage> {
   }
 
   void _fetchAllWeather() async {
+    Weather? tempCurrentWeather;
+    if (currentLocationEnable) {
+      tempCurrentWeather = await _fetchCurrentWeather();
+    }
     List<Weather?> tempData = [];
     for (String location in locations) {
       Weather? weather = await _fetchWeather(location);
@@ -35,6 +40,7 @@ class _HomePageState extends State<HomePage> {
     setState(() {
       weatherData = tempData;
       _isLoading = false;
+      currentWeatherData = tempCurrentWeather;
     });
   }
 
@@ -46,42 +52,37 @@ class _HomePageState extends State<HomePage> {
     _fetchAllWeather();
   }
 
+  Future<Weather?> _fetchCurrentWeather() async {
+    try {
+      var position = await getCurrentLocation();
+      Weather? result = await Weather.fetchWeatherLocation(
+          position.longitude, position.latitude);
+      setState(() {
+        _isLoading = false;
+      });
+      return result;
+    } catch (e) {
+      setState(() {
+        _errorMessage = 'Failed to load the current Weather Data. $e';
+        _isLoading = false;
+      });
+      return null;
+    }
+  }
+
   Future<Weather?> _fetchWeather(location) async {
-    currentLocationEnable = false;
-    if (currentLocationEnable == true) {
-      // For current location
-      try {
-        var position = await getCurrentLocation();
-        Weather? result = await Weather.fetchWeatherLocation(
-          position.longitude,
-          position.latitude,
-        );
-        setState(() {
-          _isLoading = false;
-        });
-        return result;
-      } catch (e) {
-        setState(() {
-          _errorMessage = 'Failed to load the Weather data. $e';
-          _isLoading = false;
-        });
-        return null;
-      }
-    } else {
-      // for location manager!
-      try {
-        Weather? result = await Weather.fetchWeatherArea(location);
-        setState(() {
-          _isLoading = false;
-        });
-        return result;
-      } catch (e) {
-        setState(() {
-          _errorMessage = 'Failed to load the Weather Data. $e';
-          _isLoading = false;
-        });
-        return null;
-      }
+    try {
+      Weather? result = await Weather.fetchWeatherArea(location);
+      setState(() {
+        _isLoading = false;
+      });
+      return result;
+    } catch (e) {
+      setState(() {
+        _errorMessage = 'Failed to load the Weather Data. $e';
+        _isLoading = false;
+      });
+      return null;
     }
   }
 
@@ -110,24 +111,38 @@ class _HomePageState extends State<HomePage> {
         ],
       ),
       body: PageView.builder(
-        itemCount: locations.length,
+        itemCount: currentLocationEnable ? locations.length + 1 : locations
+            .length,
         itemBuilder: (context, index) {
-          Weather? response =
-              (index < weatherData.length) ? weatherData[index] : null;
-          return RefreshIndicator(
+          // Weather? response = (index < weatherData.length) ? weatherData[index] : null;
+          Weather? response;
+          if (currentLocationEnable && index == 0) {
+            response =
+                currentWeatherData; // Show current location on first page
+          } else {
+            int locationIndex = currentLocationEnable ? index - 1 : index;
+            response = (locationIndex < weatherData.length)
+                ? weatherData[locationIndex]
+                : null;
+          }
+          return _isLoading ?
+          Center(child: CircularProgressIndicator()) :
+          _errorMessage != null ?
+          Center(child: Text(_errorMessage!)) :
+          RefreshIndicator(
             onRefresh: () async {
-              Weather? newWeather = await _fetchWeather(locations[index]);
-              if (newWeather != null) {
-                setState(() => weatherData[index] = newWeather);
+              int locationIndex = currentLocationEnable ? index - 1 : index;
+              if (locationIndex >= 0 && locationIndex < locations.length) {
+                Weather? newWeather = await _fetchWeather(
+                    locations[locationIndex]);
+                if (newWeather != null) {
+                  setState(() => weatherData[locationIndex] = newWeather);
+                }
               }
             },
             child: Padding(
               padding: EdgeInsets.all(3),
-              child: _isLoading
-                  ? Center(child: CircularProgressIndicator())
-                  : _errorMessage != null
-                  ? Center(child: Text(_errorMessage!))
-                  : ListView(
+              child: ListView(
                 // spacing: 3,
                 children: [
                   SizedBox(

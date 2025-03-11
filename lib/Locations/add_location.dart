@@ -12,7 +12,8 @@ class AddLocation extends StatefulWidget {
 class _AddLocationState extends State<AddLocation> {
   List<String> locations = [];
   final TextEditingController wantToAdd = TextEditingController();
-  bool _currentLocationEnable = true;
+
+  // bool _currentLocationEnable = true;
 
   @override
   void initState() {
@@ -54,7 +55,7 @@ class _AddLocationState extends State<AddLocation> {
                   style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700),
                 ),
                 trailing: Switch(
-                  value: _currentLocationEnable,
+                  value: currentLocationEnable,
                   activeColor: Colors.blue.shade700,
                   inactiveTrackColor: Colors.grey,
                   trackOutlineColor: WidgetStateProperty.resolveWith((states) {
@@ -73,7 +74,7 @@ class _AddLocationState extends State<AddLocation> {
                   }),
                   onChanged: (bool value) {
                     setState(() {
-                      _currentLocationEnable = value;
+                      currentLocationEnable = value;
                     });
                   },
                 ),
