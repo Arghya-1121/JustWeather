@@ -10,7 +10,7 @@
     <application
         android:icon="@mipmap/ic_launcher"
         android:name="${applicationName}"
-        android:label="weather03">
+        android:label="Just Weather">
         <activity
             android:name=".MainActivity"
             android:exported="true"
