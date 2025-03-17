@@ -25,7 +25,7 @@ A minimal yet powerful weather app built with Flutter. JustWeather provides real
 
 1. **Clone the Repository**
    ```bash
-   git clone https://github.com/yourusername/JustWeather.git
+   git clone https://github.com/Arghya-1121/JustWeather.git
    cd JustWeather
    ```
 
