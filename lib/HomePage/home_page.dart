@@ -328,7 +328,6 @@ class _HomePageState extends State<HomePage> {
           );
         },
       ),
-      // floatingActionButton: IconButton(onPressed: _fetchWeather, icon: Icon(Icons.refresh)),
     );
   }
 
