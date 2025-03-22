@@ -1,10 +1,20 @@
 // ignore: depend_on_referenced_packages
 import 'package:shared_preferences/shared_preferences.dart';
 
-bool currentLocationEnable = true;
+bool currentLocationEnable = false;
 
 class LocationManager {
   static const String _key = 'Location';
+
+  static Future<bool> currentLocationState() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getBool('currentLocationEnable') ?? false;
+  }
+
+  static Future<void> saveCurrentLocationState(bool state) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('currentLocationEnable', state);
+  }
 
   static Future<void> saveLocations(List<String> loc) async {
     final prefs = await SharedPreferences.getInstance();

@@ -53,19 +53,23 @@ class _HomePageState extends State<HomePage> {
   }
 
   Future<Weather?> _fetchCurrentWeather() async {
-    try {
-      var position = await getCurrentLocation();
-      Weather? result = await Weather.fetchWeatherLocation(
-          position.longitude, position.latitude);
-      setState(() {
-        _isLoading = false;
-      });
-      return result;
-    } catch (e) {
-      setState(() {
-        _errorMessage = 'Failed to load the current Weather Data. $e';
-        _isLoading = false;
-      });
+    if (currentLocationEnable) {
+      try {
+        var position = await getCurrentLocation();
+        Weather? result = await Weather.fetchWeatherLocation(
+            position.longitude, position.latitude);
+        setState(() {
+          _isLoading = false;
+        });
+        return result;
+      } catch (e) {
+        setState(() {
+          _errorMessage = 'Failed to load the current Weather Data. $e';
+          _isLoading = false;
+        });
+        return null;
+      }
+    } else {
       return null;
     }
   }
@@ -111,14 +115,14 @@ class _HomePageState extends State<HomePage> {
         ],
       ),
       body: PageView.builder(
-        itemCount: currentLocationEnable ? locations.length + 1 : locations
+        itemCount: currentLocationEnable! ? locations.length + 1 : locations
             .length,
         itemBuilder: (context, index) {
           Weather? response;
-          if (currentLocationEnable && index == 0) {
+          if (currentLocationEnable! && index == 0) {
             response = currentWeatherData;
           } else {
-            int locationIndex = currentLocationEnable ? index - 1 : index;
+            int locationIndex = currentLocationEnable! ? index - 1 : index;
             response = (locationIndex < weatherData.length)
                 ? weatherData[locationIndex]
                 : null;
@@ -129,7 +133,7 @@ class _HomePageState extends State<HomePage> {
           Center(child: Text(_errorMessage!)) :
           RefreshIndicator(
             onRefresh: () async {
-              int locationIndex = currentLocationEnable ? index - 1 : index;
+              int locationIndex = currentLocationEnable! ? index - 1 : index;
               if (locationIndex >= 0 && locationIndex < locations.length) {
                 Weather? newWeather = await _fetchWeather(
                     locations[locationIndex]);

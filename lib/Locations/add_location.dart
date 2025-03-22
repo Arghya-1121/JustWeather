@@ -77,6 +77,7 @@ class _AddLocationState extends State<AddLocation> {
                   onChanged: (bool value) {
                     setState(() {
                       currentLocationEnable = value;
+                      LocationManager.saveCurrentLocationState(value);
                     });
                   },
                 ),

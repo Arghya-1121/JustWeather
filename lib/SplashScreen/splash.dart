@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:weather03/Helper/location_manager.dart';
 import 'package:weather03/HomePage/home_page.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -23,6 +24,12 @@ class _SplashScreenState extends State<SplashScreen> {
         MaterialPageRoute(builder: (context) => HomePage(appName: appName)),
       ),
     );
+    _loadImportantStuff();
+  }
+
+  Future<void> _loadImportantStuff() async {
+    currentLocationEnable = await LocationManager.currentLocationState();
+    setState(() {});
   }
 
   @override
