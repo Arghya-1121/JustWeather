@@ -1,6 +1,6 @@
 # JustWeather
 
-![JustWeather](assets/icon.png) <!-- Replace with your app's logo if available -->
+![JustWeather](assets/images/app_icon.png) <!-- Replace with your app's logo if available -->
 
 A minimal yet powerful weather app built with Flutter. JustWeather provides real-time weather updates, current location support, and easy location management.
 
@@ -19,7 +19,7 @@ A minimal yet powerful weather app built with Flutter. JustWeather provides real
 
 | Home Page  | Locations Page |
 |------------|---------------|
-| ![Home](assets/screenshot1.png) | ![Locations](assets/screenshot2.png) |
+| ![Home](assets/Screenshot_homepage.png) | ![Locations](assets/Screenshot_locationManager.png) |
 
 ## Installation
 
