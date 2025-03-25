@@ -24,9 +24,11 @@ jobs:
           channel: 'stable'
           architecture: x64
 
-      - run: flutter build apk --release --split-per-abi
+      # - run: flutter build apk --release --split-per-abi
+      - run: flutter build apk --release --dart-define=WEATHER_API_KEY=${{ secrets.WEATHER_API_KEY }} --split-per-abi
       - run: |
-          flutter build ios --no-codesign
+          # flutter build ios --no-codesign
+          flutter build ios --no-codesign --dart-define=WEATHER_API_KEY=${{ secrets.WEATHER_API_KEY }}
           cd build/ios/iphoneos
           mkdir Payload
           cd Payload
