@@ -1,4 +1,3 @@
 class WeatherApi {
-  // ignore: constant_identifier_names
-  static const String API = 'YOUR_API_KEY';
+  static const String API = String.fromEnvironment('WEATHER_API_KEY', defaultValue: 'YOUR_API_KEY');
 }
